@@ -9,7 +9,7 @@
   "scripts": {
     "build": "node build.mjs",
     "start": "node server.mjs",
-    "test": "node build.mjs && node tests/generator.test.mjs",
+    "test": "node build.mjs && node tests/generator.test.mjs && node tests/cropper.test.mjs",
     "test:online": "node build.mjs && node tests/generator.test.mjs --online"
   },
   "devDependencies": {

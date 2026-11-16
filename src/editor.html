@@ -12,7 +12,7 @@
   <header class="topbar">
     <div class="brand"><span class="brand-mark" aria-hidden="true">▧</span><div><strong>个人名片</strong><span>IMAGE GENERATOR</span></div></div>
     <div class="header-note"><span class="local-dot"></span>本地生成 · 不上传你的图片</div>
-    <div class="header-actions"><button id="save-config" class="quiet">保存配置</button><label class="quiet file-button">导入配置<input id="load-config" type="file" accept=".json,application/json"></label></div>
+    <div class="header-actions"><a class="quiet repository-link" href="https://github.com/41kewen/profile-image-generator" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 GitHub 仓库">GitHub 仓库 ↗</a><button id="save-config" class="quiet">保存配置</button><label class="quiet file-button">导入配置<input id="load-config" type="file" accept=".json,application/json"></label></div>
   </header>
   <main class="workspace">
     <aside class="editor" aria-label="图片配置">
@@ -92,8 +92,16 @@
       <p class="privacy-note">头像、照片与文字仅在本地处理。新地图和地点查询需要联网，默认示例地图可离线生成。</p>
     </section>
   </main>
+  <dialog id="crop-dialog" aria-labelledby="crop-title" aria-describedby="crop-help">
+    <div class="crop-header"><div><span class="kicker">YOUR FRAME, YOUR CHOICE</span><h2 id="crop-title">手动取景</h2><p id="crop-dimensions"></p></div><button id="crop-cancel" class="quiet" aria-label="取消取景">取消</button></div>
+    <p id="crop-help">原图完整显示在左侧。拖动白色选区、调整取景范围，确认后才会替换图片。</p>
+    <div class="crop-layout"><canvas id="crop-canvas" width="1000" height="620" tabindex="0" aria-label="图片裁剪选区，拖动或用方向键移动选区，Shift 加速"></canvas><div class="crop-preview"><span class="section-label">选区预览</span><canvas id="crop-result" width="280" height="280" aria-label="所选区域预览"></canvas><p id="crop-selection" aria-live="polite"></p><p>调整选区后点击“确认裁剪并使用”。取消不会更改当前图片。</p></div></div>
+    <div class="crop-slider"><label for="crop-zoom">取景放大 <output id="crop-zoom-value">1.0×</output></label><input id="crop-zoom" type="range" min="1" max="6" step="0.05"><button id="crop-reset" class="text-button">重置选区</button></div>
+    <div class="crop-actions"><button id="crop-confirm" class="primary">确认裁剪并使用</button></div>
+  </dialog>
   <script>/* INLINE_ASSETS */</script>
   <script>/* INLINE_RENDERER */</script>
+  <script>/* INLINE_CROPPER */</script>
   <script>/* INLINE_APP */</script>
 </body>
 </html>

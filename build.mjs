@@ -16,7 +16,7 @@ for (const [key, filename] of Object.entries(files)) {
   assets[key] = `data:image/${mime};base64,${bytes.toString('base64')}`;
 }
 let html = await readFile(path.join(root, 'src', 'editor.html'), 'utf8');
-for (const [marker, filename] of Object.entries({ INLINE_STYLE: 'style.css', INLINE_RENDERER: 'renderer.js', INLINE_APP: 'app.js' })) {
+for (const [marker, filename] of Object.entries({ INLINE_STYLE: 'style.css', INLINE_RENDERER: 'renderer.js', INLINE_CROPPER: 'cropper.js', INLINE_APP: 'app.js' })) {
   const content = await readFile(path.join(root, 'src', filename), 'utf8');
   if (content.toLowerCase().includes('</script')) throw new Error(`脚本包含不能内嵌的结束标签：${filename}`);
   if (!html.includes(`/* ${marker} */`)) throw new Error(`缺少打包标记：${marker}`);

@@ -288,7 +288,11 @@
       if (!SUPPORTED_TYPES.includes(file.type)) throw new Error('仅支持 PNG、JPG 和 WebP 图片。');
       if (file.size > 15 * 1024 * 1024) throw new Error('单张图片不能超过 15 MB。');
       const key = input.dataset.asset;
-      const normalized = await normalizeImage(await fileData(file));
+      const original = await decodeImage(await fileData(file));
+      if (original.naturalWidth * original.naturalHeight > 80000000) throw new Error('图片像素过多，请先缩小图片。');
+      const selection = await ImageCropper.select(original, key);
+      if (!selection) { notify('已取消取景，原图片保持不变。'); return; }
+      const normalized = await normalizeImage(selection);
       uploads[key] = normalized.data;
       assets[key] = normalized.image;
       if (key === 'background') state.appearance.backgroundMode = 'image';

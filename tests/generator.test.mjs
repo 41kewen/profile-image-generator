@@ -33,6 +33,13 @@ try {
   }
   await page.goto(pathToFileURL(path.join(output, '图片生成器.html')).href);
   await ready();
+  await check('顶部 GitHub 仓库入口正确且安全打开', async () => {
+    const link = page.locator('.repository-link');
+    assert.equal(await link.getAttribute('href'), 'https://github.com/41kewen/profile-image-generator');
+    assert.equal(await link.getAttribute('target'), '_blank');
+    assert.equal(await link.getAttribute('rel'), 'noopener noreferrer');
+    assert(await link.isVisible());
+  });
   await check('通用默认资料，不包含旧账号和项目', async () => {
     const state = await page.evaluate(() => window.generator.getState());
     assert.equal(state.profile.name, '你的名字');
@@ -67,6 +74,8 @@ try {
     const uploaded = path.join(validation, 'upload-fixture.png');
     await sharp({ create: { width: 300, height: 300, channels: 3, background: '#4c8198' } }).png().toFile(uploaded);
     await page.locator('[data-asset="avatar"]').setInputFiles(uploaded);
+    await page.locator('#crop-dialog').waitFor({ state: 'visible' });
+    await page.locator('#crop-confirm').click();
     await page.waitForFunction(() => document.querySelector('#status').textContent.includes('图片已更换'));
     assert.notDeepEqual(await png(), before);
   });

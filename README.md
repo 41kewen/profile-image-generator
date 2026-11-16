@@ -4,6 +4,12 @@
 
 ![生成效果](docs/example.png)
 
+## 在线使用
+
+打开 [在线生成器](https://41kewen.github.io/profile-image-generator/)，无需下载或安装即可编辑并导出 PNG。图片和配置在当前浏览器处理，不上传到 GitHub；在线地图和地点搜索仍会请求第三方地图服务。
+
+GitHub Pages 由 `.github/workflows/pages.yml` 在 `main` 分支更新后自动构建部署，仅发布网页和许可文件，不发布 Windows 启动脚本。
+
 ## 下载使用
 
 在 [Releases](https://github.com/41kewen/profile-image-generator/releases) 下载最新版 ZIP，完整解压后双击 `start-generator.cmd`。
@@ -23,7 +29,7 @@ Windows 10/11 自带 PowerShell 加上较新的 Chrome/Edge 即可使用，不�
 
 - 默认示例地图、上传地图图片和已保存地图快照可离线生成。
 - 新位置和地点搜索需要网络。
-- 在线选点请通过启动器进入真正的本机 HTTP 编辑器。直接打开 HTML 仅支持内嵌地图、快照和截图；不会伪造来源头绕过地图服务政策。
+- 在线选点请使用在线生成器，或通过启动器进入真正的本机 HTTP 编辑器。直接打开 HTML 仅支持内嵌地图、快照和截图；不会伪造来源头绕过地图服务政策。
 - 地图加载失败时暂停导出，避免生成坐标与地图不匹配的图片。
 - WGS84 经纬度，纬度范围 ±85.051128°，经度范围 ±180°。
 - 设备位置需要浏览器和操作系统许可；不可用时可以输入坐标。

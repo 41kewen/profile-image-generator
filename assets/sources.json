@@ -1,0 +1,21 @@
+{
+  "decorativeAssets": {
+    "files": "*.svg",
+    "author": "kewen",
+    "license": "MIT",
+    "source": "本项目原创矢量装饰素材"
+  },
+  "map": {
+    "file": "map-default.png",
+    "lat": 30.248,
+    "lon": 120.151,
+    "zoom": 12,
+    "width": 505,
+    "height": 309,
+    "attribution": "© OpenStreetMap contributors",
+    "imageLicense": "CC-BY-SA-2.0",
+    "dataLicense": "ODbL-1.0",
+    "source": "https://tile.openstreetmap.org/",
+    "copyright": "https://www.openstreetmap.org/copyright"
+  }
+}

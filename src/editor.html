@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>个人名片 · 图片生成器</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23315c76'/%3E%3Cpath d='M8 9h16v14H8zM8 18l5-4 6 7 3-4 2 3' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
+  <meta name="description" content="保留毛玻璃四板块风格的本地 PNG 图片生成器。">
+  <style>/* INLINE_STYLE */</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">▧</span><div><strong>个人名片</strong><span>IMAGE GENERATOR</span></div></div>
+    <div class="header-note"><span class="local-dot"></span>本地生成 · 不上传你的图片</div>
+    <div class="header-actions"><button id="save-config" class="quiet">保存配置</button><label class="quiet file-button">导入配置<input id="load-config" type="file" accept=".json,application/json"></label></div>
+  </header>
+  <main class="workspace">
+    <aside class="editor" aria-label="图片配置">
+      <div class="editor-heading"><span class="kicker">YOUR PERSONAL CARD</span><h1>把你放进风景里。</h1><p>四个板块，一张属于你的图片。</p></div>
+      <nav class="tabs" aria-label="编辑板块" role="tablist">
+        <button id="tab-profile" role="tab" aria-controls="panel-profile" aria-selected="true" class="active" data-panel="profile">简介</button>
+        <button id="tab-location" role="tab" aria-controls="panel-location" aria-selected="false" data-panel="location">地图</button>
+        <button id="tab-cards" role="tab" aria-controls="panel-cards" aria-selected="false" data-panel="cards">小卡片</button>
+        <button id="tab-appearance" role="tab" aria-controls="panel-appearance" aria-selected="false" data-panel="appearance">背景</button>
+      </nav>
+      <div id="panel-profile" class="panel" role="tabpanel" aria-labelledby="tab-profile">
+        <div class="section-label"><span>01 / 个人简介</span><span>左侧长卡片</span></div>
+        <div class="media-row">
+          <label class="avatar-upload"><img id="avatar-thumbnail" alt="头像预览"><span>更换头像</span><input type="file" data-asset="avatar" accept="image/png,image/jpeg,image/webp"></label>
+          <label class="cover-upload"><img id="cover-thumbnail" alt="封面预览"><span>更换顶部封面 ↗</span><input type="file" data-asset="cover" accept="image/png,image/jpeg,image/webp"></label>
+        </div>
+        <label class="field">名字<input data-bind="profile.name" maxlength="60" autocomplete="off"></label>
+        <label class="field">用户名<input data-bind="profile.handle" maxlength="80" autocomplete="off"></label>
+        <label class="field">标签 <span class="hint">逗号分隔，最多 8 个；画面显示 2 行</span><input id="tags" maxlength="200" placeholder="创作者, 旅行, 摄影"></label>
+        <label class="field">个性签名<textarea data-bind="profile.signature" maxlength="140" rows="3" placeholder="写下你的个性签名"></textarea></label>
+        <label class="field">社交标识 <span class="hint">逗号分隔，最多 4 个</span><input id="socials" maxlength="60" placeholder="X, GitHub"></label>
+        <details><summary>简介卡片背景</summary><div class="detail-body"><label class="upload-line">上传简介区域背景<input type="file" data-asset="profileBackground" accept="image/png,image/jpeg,image/webp"></label><button class="text-button" data-clear="profileBackground">恢复柔和渐变</button><label class="field">封面取景位置<input data-bind="profile.coverFocus" type="range" min="0" max="100"></label></div></details>
+      </div>
+      <div id="panel-location" class="panel" role="tabpanel" aria-labelledby="tab-location" hidden>
+        <div class="section-label"><span>02 / 我的坐标</span><span>右上地图卡片</span></div>
+        <label class="field">地图来源<select data-bind="location.mode"><option value="online">真实地图 · 选点</option><option value="image">上传地图截图</option></select></label>
+        <div id="online-controls">
+          <label class="field">快速选择城市<select id="city"><option value="custom">自定义位置</option><option value="wenzhou">浙江 · 温州</option><option value="hangzhou">浙江 · 杭州</option><option value="shanghai">上海</option><option value="beijing">北京</option><option value="guangzhou">广东 · 广州</option><option value="chengdu">四川 · 成都</option><option value="tokyo">日本 · 东京</option></select></label>
+          <label class="field">搜索地点 <span class="hint">需要网络</span><span class="search-row"><input id="place-query" maxlength="120" placeholder="如：杭州西湖"><button id="search-place" class="small-button">查找</button></span></label>
+          <div id="search-results" class="search-results" aria-label="地点搜索结果"></div>
+          <div class="coordinate-row"><label class="field">纬度<input id="latitude" type="number" step="0.000001" min="-85.051128" max="85.051128"></label><label class="field">经度<input id="longitude" type="number" step="0.000001" min="-180" max="180"></label><button id="apply-location" class="small-button">定位</button></div>
+          <div class="picker-wrap"><canvas id="map-picker" width="505" height="309" role="img" aria-label="位置选择地图：可拖动平移、点击选择；也可用上方坐标输入框定位" tabindex="0"></canvas><div class="map-zoom"><button id="zoom-in" aria-label="放大地图">＋</button><button id="zoom-out" aria-label="缩小地图">−</button></div><a class="map-credit" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a></div>
+          <div class="map-tools"><span>拖动地图 / 点击选点 / 方向键微调</span><button id="use-geolocation" class="text-button">使用设备位置</button></div>
+          <label class="field">缩放 <output id="zoom-label"></output><input id="map-zoom" type="range" min="3" max="17"></label>
+          <p id="map-status" class="hint" aria-live="polite">默认示例地图可离线使用。新位置请用 start-generator.cmd 启动。</p><button id="retry-map" class="text-button" hidden>重试加载地图</button>
+        </div>
+        <div id="image-map-controls" hidden><label class="upload-line">选择地图图片<input type="file" data-asset="mapImage" accept="image/png,image/jpeg,image/webp"></label><p class="hint">截图模式只显示上传图片，不会随坐标更新。</p><label class="field">地图来源署名<input data-bind="location.imageAttribution" maxlength="100" placeholder="如：© 高德地图（按素材许可填写）"></label></div>
+        <label class="field">位置名称<input data-bind="location.title" maxlength="80" placeholder="你的城市或地点"></label>
+        <label class="field">位置说明<input data-bind="location.caption" maxlength="120" placeholder="写下与这个地方有关的一句话"></label>
+      </div>
+      <div id="panel-cards" class="panel" role="tabpanel" aria-labelledby="tab-cards" hidden>
+        <div class="section-label"><span>03 / 项目与兴趣</span><span>右下两张卡片</span></div>
+        <h2>项目卡片</h2>
+        <div class="icon-uploads"><label class="mini-upload">图标 1<input type="file" data-asset="projectIcon0" accept="image/png,image/jpeg,image/webp"></label><label class="mini-upload">图标 2<input type="file" data-asset="projectIcon1" accept="image/png,image/jpeg,image/webp"></label><button class="text-button" id="reset-project-icons">恢复图标</button></div>
+        <label class="field">上方小字<input data-bind="project.eyebrow" maxlength="90"></label>
+        <label class="field">标题<input data-bind="project.title" maxlength="60"></label>
+        <label class="field">补充说明<input data-bind="project.subtitle" maxlength="80"></label>
+        <div class="card-theme"><label class="color-label">色调<input data-bind="project.color" type="color"></label><label class="mini-upload">卡片背景<input type="file" data-asset="projectBackground" accept="image/png,image/jpeg,image/webp"></label><button class="text-button" data-clear="projectBackground">清除背景</button></div>
+        <hr>
+        <h2>兴趣卡片</h2>
+        <div class="icon-uploads"><label class="mini-upload">图标 1<input type="file" data-asset="hobbiesIcon0" accept="image/png,image/jpeg,image/webp"></label><label class="mini-upload">图标 2<input type="file" data-asset="hobbiesIcon1" accept="image/png,image/jpeg,image/webp"></label><label class="mini-upload">图标 3<input type="file" data-asset="hobbiesIcon2" accept="image/png,image/jpeg,image/webp"></label><button class="text-button" id="reset-hobbies-icons">恢复图标</button></div>
+        <label class="field">上方小字<input data-bind="hobbies.eyebrow" maxlength="90"></label>
+        <label class="field">标题<input data-bind="hobbies.title" maxlength="60"></label>
+        <label class="field">补充说明<input data-bind="hobbies.subtitle" maxlength="80"></label>
+        <div class="card-theme"><label class="color-label">色调<input data-bind="hobbies.color" type="color"></label><label class="mini-upload">卡片背景<input type="file" data-asset="hobbiesBackground" accept="image/png,image/jpeg,image/webp"></label><button class="text-button" data-clear="hobbiesBackground">清除背景</button></div>
+      </div>
+      <div id="panel-appearance" class="panel" role="tabpanel" aria-labelledby="tab-appearance" hidden>
+        <div class="section-label"><span>04 / 风景与质感</span><span>圆角毛玻璃风格</span></div>
+        <label class="scene-upload"><img id="background-thumbnail" alt="风景背景预览"><span>更换整张图片的风景背景 ↗</span><input type="file" data-asset="background" accept="image/png,image/jpeg,image/webp"></label>
+        <label class="field">背景模式<select data-bind="appearance.backgroundMode"><option value="image">风景照片</option><option value="gradient">日落渐变</option></select></label>
+        <label class="field">背景取景位置<input data-bind="appearance.backgroundFocus" type="range" min="0" max="100"></label>
+        <label class="field">背景压暗 <output data-output="appearance.darkness"></output><input data-bind="appearance.darkness" type="range" min="0" max="60"></label>
+        <label class="field">毛玻璃模糊 <output data-output="appearance.blur"></output><input data-bind="appearance.blur" type="range" min="0" max="50"></label>
+        <label class="field">玻璃厚度 <output data-output="appearance.glass"></output><input data-bind="appearance.glass" type="range" min="10" max="75"></label>
+        <label class="field">窗口标题<input data-bind="appearance.windowTitle" maxlength="60"></label>
+        <button id="restore-scene" class="quiet full-width">恢复默认风景</button>
+        <p class="helper">保留四个板块与毛玻璃质感。默认是原创装饰风景，可上传你自己的照片。</p>
+      </div>
+      <div class="editor-footer"><span>支持 PNG / JPG / WebP，单张不超过 15 MB</span><button id="reset-all" class="text-button">重置全部</button></div>
+    </aside>
+    <section class="preview-area" aria-label="生成图片预览">
+      <div class="preview-top"><div><span class="kicker">LIVE CANVAS</span><h2>图片预览</h2></div><span class="preview-badge"><span class="local-dot"></span>实时生成</span></div>
+      <div class="preview-frame"><canvas id="preview" width="1376" height="928" role="img" aria-label="毛玻璃四板块个人名片图片预览"></canvas></div>
+      <div class="preview-caption"><span>简介 · 地图 · 项目 · 兴趣</span><span>固定构图，内容随你</span></div>
+      <div class="export-bar"><div class="export-copy"><strong>准备好，把它保存下来。</strong><span>只导出图片，不包含编辑器或任何按钮。</span></div><div class="export-controls"><label class="resolution-label">导出尺寸<select id="export-scale"><option value="1">标准 · 1376 × 928</option><option value="2" selected>高清 · 2752 × 1856</option><option value="3">超清 · 4128 × 2784</option></select></label><button id="export-png" class="primary">导出 PNG <span aria-hidden="true">↓</span></button></div></div>
+      <p id="status" class="status" role="status" aria-live="polite">正在准备图片…</p>
+      <p class="privacy-note">头像、照片与文字仅在本地处理。新地图和地点查询需要联网，默认示例地图可离线生成。</p>
+    </section>
+  </main>
+  <script>/* INLINE_ASSETS */</script>
+  <script>/* INLINE_RENDERER */</script>
+  <script>/* INLINE_APP */</script>
+</body>
+</html>

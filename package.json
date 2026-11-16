@@ -1,0 +1,19 @@
+{
+  "name": "profile-image-generator",
+  "version": "1.1.0",
+  "private": true,
+  "description": "本地生成四板块毛玻璃个人名片 PNG 的开源工具",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=20.19.0" },
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node server.mjs",
+    "test": "node build.mjs && node tests/generator.test.mjs",
+    "test:online": "node build.mjs && node tests/generator.test.mjs --online"
+  },
+  "devDependencies": {
+    "playwright": "1.65.1",
+    "sharp": "0.35.5"
+  }
+}

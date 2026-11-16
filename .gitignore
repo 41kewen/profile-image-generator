@@ -1,0 +1,12 @@
+/node_modules/
+/dist/
+/validation/
+/.local-backup/
+/.env
+/.env.*
+*.log
+*.zip
+*.tmp
+__pycache__/
+.DS_Store
+Thumbs.db

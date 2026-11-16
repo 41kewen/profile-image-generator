@@ -32,7 +32,7 @@ await rename(target + '.tmp', target);
 await writeFile(path.join(output, 'start-generator.ps1'), '\ufeff' + await readFile(path.join(root, 'src', 'start-generator.ps1'), 'utf8'), 'utf8');
 await writeFile(path.join(output, 'start-generator.cmd'), '@echo off\r\npowershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0start-generator.ps1"\r\nif errorlevel 1 pause\r\n');
 await writeFile(path.join(output, 'stop-generator.cmd'), '@echo off\r\npowershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0start-generator.ps1" -Stop\r\nif errorlevel 1 pause\r\n');
-for (const filename of ['README.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md']) {
+for (const filename of ['README.md', 'CONTRIBUTING.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md']) {
   await writeFile(path.join(output, filename), await readFile(path.join(root, filename)));
 }
 console.log(JSON.stringify({ output: target, bytes: Buffer.byteLength(html), embeddedAssets: Object.keys(assets).length }, null, 2));
